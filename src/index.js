@@ -1,5 +1,7 @@
 'use strict';
 
+const { Server } = require('socket.io');
+
 module.exports = {
   /**
    * An asynchronous register function that runs before
@@ -16,5 +18,27 @@ module.exports = {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap(/*{ strapi }*/) {},
+  bootstrap({ strapi }) {
+    const io = new Server(strapi.server.httpServer, {
+      cors: {
+        origin: "http://localhost:3000", 
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true,
+      },
+    });
+
+    io.on('connection', (socket) => {
+      console.log('A user connected');
+      socket.on('message', (msg) => {
+        console.log('Message received:', msg);
+        io.emit('message', msg); 
+      });
+
+      socket.on('disconnect', () => {
+        console.log('A user disconnected');
+      });
+    });
+    strapi.io = io;
+  },
 };
