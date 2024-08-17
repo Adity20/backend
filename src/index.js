@@ -21,7 +21,7 @@ module.exports = {
   bootstrap({ strapi }) {
     const io = new Server(strapi.server.httpServer, {
       cors: {
-        origin: "http://localhost:3000", 
+        origin: "https://frontend-gxoh.vercel.app/", 
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true,
